@@ -1,0 +1,90 @@
+* 32 articles (09/2023 to 01/2026 + 12/2022 + 03/2020)
+    • 2020: 1 (CEREBRUM: foundational work)
+    • 2022: 1 (Knowledge-Based Systems)
+    • 2023: 2 (Computers in Biology and Medicine, BSPC)
+    • 2024: 12
+    • 2025: 11
+    • 2026 (in press): 
+    
+* weakly and semi supervised medical image segmentation
+
+*published across 18:
+    • Biomedical Signal Processing and Control: 7
+    • Computers in Biology and Medicine: 5
+    • Pattern Recognition: 3 
+    • Medical Image Analysis: 2
+    
+* level of annotation:
+    • image level labels (classification only): 8 papers (3, 4, 6, 10, 17, 20, 23, 25)
+    • scribble annotations: 5 papers (1, 11, 12, 29, 31)    
+    • bounding box annotations: 4 papers (2, 18, 21, 26)
+    • point/sparse point annotations: 2 papers (8, 27)    
+    • partial annotations: 2 papers (13, 22)
+    • mixed supervision (FSL + WSL + SSL): 1 paper (14)    
+    • patient-level: 1 papers (19)    
+    • voxel-wise: 5 papers (7, 9, 16, 24, 28)
+    • SS (pixel level + unlabeled): 1 papers (15)    
+    • region level: 1 paper (32)
+    • 2D to 3D mapping: 1 paper (5)
+    • voxel and image level: 1 paper (30)
+    
+* Architecture:
+    • UNet/dual branch UNet: 1, 8, 12, 15 using scribble, point and SSL
+    • 3D UNet/nnUNet: 9, 13, 16, 21 using voxel, partial slice, bounding box
+    • CNN + ViT: 11, 14
+    • transformer (ViT/Swin): 25, 26 using image and bounding box
+    • Cascaded Networks: 24 using voxel wise
+    • CAM-based (VGG/ResNet): 3, 4, 6, 17, 23, 25 using image level
+    • 3D CNN (multi-modal): 20, 31 using centroid and scribble
+    • YOLOv5 + UNet: 18 using boudning box
+
+* UNet based Arch:
+encoder-decoder with skip connection or modify dual branch configuration (paper 1 and 14), teach student structure (12, 15, 19), 3D extensions (9, 13, 21, 24)
+
+* Vision Transformers:
+ViT, Swin Transformer in 11, 14, 25, 26 or hybrid CNN+Vit in 11 and 14 where CNN branches capture local spatial feature and Vit branches model global contextual dependencies, pure transformer based models on 25 and 26
+
+* Novel/Specialized archs:
+    • Implicit Neural Representation (INR) (5)
+    • cascaded registration network (24)
+    • triple-branch V-Net (31)
+    
+    
+* Pseudo mask:
+    • CAM + threshold (3, 4, 25): apply threshold (0.5-0.6) to produce binary masks
+    • Dynamic Label Ensembling (EMA) (14, 15, 19, 12): teacher-student paradigm using Exponential Moving Average (EMA) where the teacher model produces soft predictions that supervise the student, paper 14 uses random beta-weighted ensembling between CNN and ViT teachers for refinement, paper 11 operates in the frequency domain, decomposing predictions via Haar wavelet transform before mixing low-frequency (shape) and high-frequency (boundary) components independently
+    • Adaptive Regional Growth (18, 30): traditional computer vision algorithms 
+    • CAM + Geodesic Refinement (6): uncertainty-weighted multi-resolution fusion followed by geodesic seed expansion
+    • CAM + Level Set (DRLSE) (27): uses DRLSE level set evolution as a physics-inspired refinement tool across MRI modalities
+    • CAM + Texture Knowledge (23): integrates external texture knowledge (GLCM features and fuzzy K-means clustering)
+    • Frequency-Domain Mixing (11)
+    • Atlas-based Registration (9, 24)
+    • Supervoxel Propagation (SLIC) (29)
+    • Bounding Box CRF (21)
+    • Gaussian Mask Simulation (20)
+    • 2D to 3D Prism Extension (5): bridges 2D annotations to 3D by extending pixels into spatial prisms
+    • No Pseudo Mask (MIL) (2): Multiple Instance Learning bags constructed via parallel/polar image transformations
+    • No Pseudo Mask (Consistency) (8): propagates point annotations using a consistency loss between adjacent slices
+    • Regression Pre-training (RANO) (32): enforces consistency between modalities via MSE loss without ever generating explicit pseudo labels
+
+
+* Datasets:
+    • ACDC (Automated Cardiac Diagnosis Challenge 2017) in 8 papers
+    • BraTS (2018–2023) in 7 papers
+    • INSTANCE2022 (Intracranial Hemorrhage CT) in 2 papers (23, 25)
+
+
+* Metrics:
+    • Dice Similarity Coefficient (DSC) in all the papers
+    • the 95th percentile Hausdorff Distance (HD95) for boundary accuracy
+    • Jaccard/IoU for overlap
+    • Sensitivity and Specificity
+    • Average Symmetric Surface Distance (ASSD)
+    • AUC-ROC for classification, PSNR/SSIM for reconstruction in 17
+    
+    
+* Limitations:
+    • generalization (can validate on one or two datasets)
+    • errors on pseudo masks 
+    • computational cost: UM-CAM in 6 with 7h training, MC Dropout in 5 with 133 min vs 33 min standard, ScribSD+ in 12 with double GPU memory
+    • dataset only from one institutions 
