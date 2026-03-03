@@ -1,0 +1,12 @@
+-propose novel text-guided learning method to achieve highly accurate cancer detection results
+-integrate diagnostic and tumor location text prompts into the text encoder of a vision-language model (VLM)
+-use large dataset that contains 1651 unique patients
+-ombine a small set of patients with voxel-level tumor annotations and a large set of patients having diagnosis and tumor location labels from their clinical reports to train a non-contrast 3D CT-based cancer screening model
+-Segmentation (produce masks): the tumor segmentation teacher network is trained on a small set of images with expert voxel-level annotations to produce pseudo tumor masks for the remaining large set of unlabeled images. 
+-Detection (classification): the main goal of the system is cancer detection, so the student network is trained using all available images and their masks (both expert and pseudo).
+-Text-guided segmentation teacher: use CT scans with fully annotated voxel masks to train a segmentation teacher network (30% patients with full annotations)
+-Backbone and Feature Aggregation:
+Backbone: model uses SwinUnetV2 (3D U-Net-like architecture) as its primary backbone, the image decoder produces multi-scale feature maps from different stages of the network when a 3D region of interest (ROI) from a CT scan is fed into this backbone
+Aggregation: the model standardizes their spatial dimensions to a uniform size using trilinear interpolation
+-Tumor Segmentation and Cancer Detection: the student model features two separate heads: segmentation head (takes the last feature map from the decoder as its input and outputs the final voxel-level tumor mask) and cancer detection head (uses the aggregated feature map to calculate the probability of the patient having cancer and it consists of three layers: 3D convolution layer (3×3×3 kernel), global average pooling (GAP) layer and FC layer), the model is trained using joint loss function which ensures that the model learns the spatial relationship between tumors and organs and helps improve both localization accuracy and detection performance.
+

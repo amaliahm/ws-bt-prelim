@@ -1,0 +1,19 @@
+1-NLP to extract features and classify imgs
+2-3 strategies: fine tunning biomedCLIP with the new loss + use it to generate pseudo masks (text to bounding box then bounding box to masks)
+3-novel text-guided mechanism to introduce knowledge of tumor location labels from clinical reports into 3D CT based vision model
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+17-reimplement the same architecture for IRM (the work was made for CT scans)

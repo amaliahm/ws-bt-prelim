@@ -1,0 +1,21 @@
+-MedCLIP-SAM that combines CLIP and SAM models to generate segmentation of clinical scans using text prompts in both zero-shot and weakly supervised
+-use new Decoupled Hard Negative Noise Contrastive Estimation (DHN-NCE) loss to fine-tune the BiomedCLIP model and the recent gScoreCAM to generate prompts to obtain segmentation masks from SAM in a zero-shot setting
+-explore the use of sero shot segmentation labels in weakly supervised paradigm to improve segmentation quality
+-test three diverse segmentation tasks and medical img modalities: breast tumor ultrasound, brain tumor MRI, and lung X-ray
+-limitation of the current DL methods: lack of large annotated datasets, the lack of interactability and interpretability limits the credence of the methods, most trained models are task and contrast/modality specific with low flexibility.
+-contribution:
+propose a novel CLIP training/fine-tuning method called the Decoupled Hard Negative Noise Contrastive Estimation (DHN-NCE)
+proposed a zero-shot medical segmentation method by combining CLIP and SAM in radiological tasks for the first time
+explore weakly-supervised strategy with the attempt to further refine zero-shot segmentation results and the full proposed technique was extensively validated on three different segmentation tasks and modalities
+-the new loss uses weighting functions to increase the penalty for negatives that happen to be very close to anchor through img to text and text to img hardness params
+-architecture:
+1-fine tune BiomedCLIP using the new loss via two trainable encoders to extract features of imgs and texts and project them into vectors with the same dim, use contractive learning to learn embedding space where pairs (img and its text) are close, use base Vision Transformer and PubMedBERT as the img and text encoders
+2-propose zero shot universal medical img segmentation startegy that everages the recent exchange AI technique 
+gScoreCAM, adopt gSoreCAM in radiological tasks for the first time, this strategy used the previous generated bounding boxes by BiomedCLIP to generate pseudo masks
+3-train Residual UNet in weakly supervised setting usign the generated pseudo masks
+-MedPix dataset: strip of special chars, lead and trail white spaces, delete samples with captions of less than 20 chars, all images were resized to 224 × 224 and normalized by the RGB channel means and standard deviations used in the original CLIP model. split  85%:15% and get 20,292 training imgs, 3,515 imgs for validation, learning rate 1E-6 and decay rate 50%, fine-tuning on batches of 64 samples
+-dataset on zero shot and weakly supervised strategies:
+breast tumor ultrasound: 600 benign and malignant tumors imgs for training
+UDIAT dataset: 65 imgs for validation and 98 for testing 
+Brain Tumor MRI T1 weighted: 1462 training, 400 validation, 400 testing
+Lung Chest X-ray: with 16,280, 1,372, and 957 Chest X-ray scans (normal, lung opacity, viral pneumonia, COVID-19)
