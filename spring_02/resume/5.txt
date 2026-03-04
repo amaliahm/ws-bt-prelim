@@ -1,0 +1,35 @@
+-MedCLIP-SAMv2 builds on the previous work by:
+investigating different saliency map generation techniques for CLIP models (replace gScoreCAM with M2IB which improves zero shot segmentation accuracy)
+enhanced weakly supervised segmentation results by training nnUNet using pseudo-labels while providing uncertainty estimation via checkpoint ensembling
+validate on additional Lung CT dataset
+investigate and optimize advanced text prompt engineering strategies by leveraging large language model (LLM) reasoning 
+test different SAM backbones and visula prompt types
+
+-the new thing:
+1-Advanced Saliency Map Technique (M2IB): the original version used gScoreCAM and v2 replaces it with the Multi-modal Information Bottleneck (M2IB) which aligns image and text modalities more effectively by maximizing mutual information between them while filtering out irrelevant data, which significantly boosts zero-shot segmentation accuracy
+2-LLM-Driven Prompt Engineering: the v2 leverages Large Language Models (GPT-4) to automate the creation of semantically rich, descriptive clinical prompts and also introduces prompt ensembling where the model averages embeddings from multiple diverse prompts (20 different descriptions) to create a more robust semantic guide than the simple keywords used in the first version
+3-Uncertainty-Aware Weak Supervision: the weakly supervised stage has been completely overhauled with two major additions: nnUNet Integration (replace the original Residual UNet with the more advanced nnUNet architecture for refining pseudo-labels) and Checkpoint Ensembling (allows the framework to provide uncertainty estimation)
+4-Expanded Modalities (Lung CT): add fourth radiological modality (Lung CT)
+5-Enhanced Performance: it upgrades results
+
+-3 distinct methodological stages:
+1-Efficient DHN-NCE Fine-Tuning: fine-tune the BiomedCLIP model to better align medical images with clinical text where they introduce the novel loss function (DHN-NCE Loss) that combines traditional InfoNCE loss with hard negative sampling to emphasize close (difficult) samples and decoupling by removing the positive term from the denominator
+which allows for more efficient training even with smaller batch sizes, base encoders (uses a Vision Transformer for images and PubMedBERT for text, fine-tuned on the MedPix dataset)
+2-Zero-Shot Medical Image Segmentation: generates segmentation masks without requiring any manual annotations using -LLM Prompt Generation: GPT-4 to automatically generate semantically rich diagnostic-style text prompts and uses prompt ensembling where embeddings from multiple prompts (20) are averaged for a more robust guide
+-M2IB Saliency Maps: replaces the previous gScoreCAM with the Multi-modal Information Bottleneck (M2IB)
+-Initial Segmentation: saliency map is converted into a binary map using Otsu’s thresholding and refined with Connected Component Analysis (CCA) to remove noise and small artifacts
+-SAM Refinement: provides visual prompts (bounding boxes) to SAM which produces the final high-quality pseudo-mask
+3-Uncertainty-Aware Weakly Supervised Segmentation: pseudo-masks from the zero-shot stage are used as weak labels to train a specialized segmentation network from scratch by
+-nnUNet Integration: uses the nnUNet architecture for label refinement
+-Checkpoint Ensembling: during a single training run the system saves multiple model checkpoints and the final prediction is an average of these checkpoints providing a robust Monte-Carlo-like approximation
+-Uncertainty Estimation: by calculating the entropy across these different checkpoint predictions, the framework generates uncertainty maps
+
+-metrics:
+1-segmentation performance metrics to evaluate zero-shot and weakly supervised segmentation quality:
+-DSC: the main metric used to measure the overlap between the predicted segmentation mask and the ground truth
+-normalized surface distance (NSD): to evaluate how closely the boundaries of the predicted mask align with the ground truth
+2-cross-modal retrieval metrics to validate the quality of the BiomedCLIP fine-tuning stage (matching clinical text to medical images): 
+-Top-1 and Top-2 accuracy: applied to both img2txt and txt2img retrieval tasks on the ROCO dataset to ensure the model correctly aligned the modalities
+3-uncertainty and statistical metrics to measure model confidence and the significance of the results:
+-entropy: to generate uncertainty maps, it calculates the variation in predictions across different model checkpoints to pinpoint regions where the model is less certain
+-p-value

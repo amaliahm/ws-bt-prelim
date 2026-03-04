@@ -1,0 +1,16 @@
+-evaluate the framework on two medical image segmentation tasks: Colonic polyp segmentation and MRI brain tumor segmentation
+- explore novel and automatic approach only using simple text cues to accomplish weakly-supervised medical image segmentation through equipping SAM with a language-to-vision prompt converter
+-contribution:
+address weakly supervised medical image segmentation using simple textual prompts by extending zero shot generalization capability of SAM thereby reducing the burden of pixel level annotation on medical images
+SimTxtSeg includes Textual-to-Visual Cue Converter(TVCC) and a Text-Vision Hybrid Attention(TVHA) module
+-train textual-to-visual cue converter to locate the tumor from text the obtain the pseudo masks using SAM’s zero shot capability
+-dataset is paired (image-text) with RGB images, which were transformed to ODVG format for precise alignment of regions and phrases
+-Textual-to-Visual Cue Converter: Inspired by GroundingDINO, consists of image and text backbones for feature extraction, Feature enhancer for image and text feature fusion, Language guided query selection module for query initialization, Cross modality decoder for box refinment 
+-fix the weights of position embedding, backbone and the language model (BERT-BASE) during training to focus only on training the feature enhancer and cross modlaity decoder
+-Text-Guided Segmentation with Text-Vision Hybrid Attention: designed to integrate semantic information from simple text cues directly into a medical image segmentation model and consists of:
+1-Feature Extraction and Alignment: extracte features from both image and text using Vision Encoding (ConvNext-Tiny), Text Encoding (text backbone: BERT-BASE to converts the descriptive text into a text embedding), use projection layer for text embedding because features exist in different dimensions 
+2-Dual-Way Cross-Modal Attention: operates in three steps: Self-Attention on Image (performs Multi-Head Self-Attention (MHSA) on the visual features), Text-to-Vision Attention (applies cross-attention where textual information acts as the query to attend to the image features) and Vision-to-Text Attention (performs reverse cross-attention where the image features act as the query to attend to the text
+3-Channel Attention: the model utilizes it to further refine the results, the fused feature map undergoes both global max pooling and global average pooling to capture spatial information across the entire map, then the pooled features are processed through Multi-Layer Perceptron (MLP) that learns to highlight relevant feature channels (those containing significant diagnostic information) while suppressing irrelevant or noisy channels and then produce final output by applying a sigmoid activation to these channel weights and combining them with the original fused features via a residual connection.
+-Colonic Polyp Dataset: 3784 images from all the 5 datasets, split randomly to 3190-299-295 for train-validate-test and reshape the image size to 384*384
+-MRI brain Tumor Dataset: 3929 images
+-SOTA contains 7 methods: 3 fully supervised models (ResUNet, PraNet, Ariadne’s Thread) and 4 weakly supervised models wiht different label levels (WeakPolyp, BoxPolyp, Boxshrink, S² ME)

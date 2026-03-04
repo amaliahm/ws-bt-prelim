@@ -1,11 +1,10 @@
 1-NLP to extract features and classify imgs
 2-3 strategies: fine tunning biomedCLIP with the new loss + use it to generate pseudo masks (text to bounding box then bounding box to masks)
 3-novel text-guided mechanism to introduce knowledge of tumor location labels from clinical reports into 3D CT based vision model
-
-
-
-
-
+4-didn't get it well, the text wasn't pre-exist but generated using GPT-4
+generate simple text for each task, feed it with the image to TVCC, TVCC generates bounding box then SAM uses them to generate pseudo masks
+5-the same as 2 + add new dataset and (base encoders ViT for images and for PubMedBERT text for first strategy), (GPT-4, M2IB for the second strategy), (use checkpoints, nnUnet architecture for last strategy) 
+note: the new paper
 
 
 

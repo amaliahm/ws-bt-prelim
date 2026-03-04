@@ -1,0 +1,33 @@
+note: for the new paper "MedCLIPSeg: probabilistic vision-langugae adaptation for data-efficieny and generalizable medical image segmentation":
+-bidirectional feature fusion: MedCLIP-SAMv2 uses a more sequential approach, it uses text to generate a saliency map (via M2IB) which is converted into a bounding box to prompt SAM but if our medical reports contain complex, spatial descriptions of a tumor's relationship to surrounding brain structures so bidirectional fusion might capture those subtle relationships better than MedCLIP-SAMv2’s stage-wise text-to-box translation
+-probabilistic cross-modal attention: MedCLIP-SAMv2 generates point-estimate saliency maps using the M2IB to maximize mutual information while effective it is a deterministic process for identifying salient regions, but in brain MRI, tumor boundaries are often ambiguous so a probabilistic approach may be better at representing the inherent fuzziness of these boundaries directly during the attention phase, rather than relying on post-processing thresholding
+-enhanced robustness across scanners (domain fhift): MedCLIP-SAMv2 demonstrates excellent generalization across tasks (from ultrasound to MRI), its primary focus is universal application rather than specific cross-scanner normalization, but brain MRI data is notorious for looking different depending on whether it was taken on a Siemens, GE, or Philips scanner so if we're using multi-center data it might yield more consistent results
+-integrated vs. post-hoc uncertainty: both frameworks produce pixel-level uncertainty maps, but MedCLIP-SAMv2 generates uncertainty maps using checkpoint ensembling which is a post-hoc method where predictions from multiple training stages are averaged to see where they disagree and the new paper suggests uncertainty is captured by the model architecture itself through probabilistic attention whcih might provide more real-time or architecturally grounded confidence estimates, which could be more reliable for a clinician-in-the-loop workflow in a brain surgery planning context
+
+
+
+
+
+==============
+
+
+
+
+MedCLIPSeg introduces more advanced way of handling the interaction between clinical text and images:
+1-superior integration of medical reports: MedCLIPSeg’s approach uses bidirectional feature fusion which means the text tokens (from reports) and the image patches (from MRI) interact directly and inform one another simultaneously where MedCLIP-SAMv2 is more unidirectional and uses text to generate a saliency map which then tells the SAM model where to look.
+2-built-in uncertainty for clinical safety: MedCLIPSeg uses probabilistic cross-modal attention because the model learns a probability distribution for how text and images relate, it can generate dense uncertainty maps based on the architecture itself where MedCLIP-SAMv2 generates uncertainty maps through checkpoint ensembling which is a post-processing method that averages different training results to see where they disagree so MedCLIPSeg’s uncertainty estimates are interpretable and highlight local reliability natively, which is crucial for helping a clinician decide if the AI's boundary for a brain tumor can be trusted
+3-handling Domain Shift (different scanners): MRI images can look very different depending on the hospital or the scanner used so MedCLIPSeg was designed to improve robustness across domains and scanners so it significantly outperformed other models in out-of-distribution (OOD) scenarios while MedCLIP-SAMv2 is universal across tasks (like switching from MRI to X-ray) so it doesn't emphasize cross-scanner consistency as a primary architectural feature
+4-data efficiency: MedCLIPSeg demonstrates incredible data efficiency achieving a 78.76% DSC with only 10% of the data and 88.66% DSC at full data where MedCLIP-SAMv2 reaches 80.03% DSC for brain MRI in its weakly supervised setting so MedCLIPSeg appears to achieve higher overall accuracy and maintains that accuracy even when the available dataset is very small
+
+
+
+
+Hybrid aproach:
+-istead of (Text → M2IB Saliency → SAM) to generate initial pseudo masks, we use MedCLIPSeg that uses bidirectional feature fusion which allows the medical reports and MRI images to inform each other simultaneously rather than the text simply pointing to a region
+-generalize the work and use more than one dataset, they would be from  different scanners or hospitals where we'll  face domain shift (the same tumor looks different depending on the machine) so we can integrate MedCLIPSeg's probabilistic vision-language (PVL) adapters into the BiomedCLIP backbone 
+-both models offer uncertainty maps but they provide different perspectives that could be combined for better clinical safety so we use MedCLIPSeg’s probabilistic cross-modal attention to identify uncertainty during the initial text-image alignment phase then use MedCLIP-SAMv2’s checkpoint ensembling during the final weakly supervised training stage, this creates a dual-check system where the first layer tells the clinician if the model is confused by the medical report description and the second layer tells them if the model is confused by the tumor's visual boundaries
+-in MedCLIP-SAMv2, the final refined segmentation is performed by an nnUNet bu we could replace the nnUNet refinement stage with a fully-trained MedCLIPSeg model which has shown exceptional data efficiency reaching an 81.10% DSC with only 10% of training data specially if the used brain tumor dataset is small, MedCLIPSeg might refine the labels more effectively than a standard nnUNet
+-pipeline: 
+stage 1: fine-tune the backbone with DHN-NCE loss (from MedCLIP-SAMv2)
+stage 2: generate high-quality pseudo-masks using MedCLIPSeg’s bidirectional fusion and probabilistic attention
+stage 3: use these masks to train a final segmentation model that utilizes checkpoint ensembling to provide the most reliable final uncertainty maps
