@@ -1,0 +1,1 @@
+-use only CT scans with no public dataset

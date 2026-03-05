@@ -5,7 +5,8 @@
 generate simple text for each task, feed it with the image to TVCC, TVCC generates bounding box then SAM uses them to generate pseudo masks
 5-the same as 2 + add new dataset and (base encoders ViT for images and for PubMedBERT text for first strategy), (GPT-4, M2IB for the second strategy), (use checkpoints, nnUnet architecture for last strategy) 
 note: the new paper
-
+6-use only CT scans with no public dataset
+7-create a tumor-free version of a positive MRI slice, useful in case of imbalanced or limited data, stabilize training
 
 
 
