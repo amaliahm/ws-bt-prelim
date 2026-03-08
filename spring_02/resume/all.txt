@@ -7,6 +7,40 @@ generate simple text for each task, feed it with the image to TVCC, TVCC generat
 note: the new paper
 6-use only CT scans with no public dataset
 7-create a tumor-free version of a positive MRI slice, useful in case of imbalanced or limited data, stabilize training
+8-use level-0 which includes 6 CNN models, they were selected because they capture distinct aspects of the BT MRI, adapt the SEL logic by combining predictions from multiple weak learners to create more robust initial noisy masks, testing new meta-models like MobileNet-v3, ResNet50,  AlexNet
+9-CLIP model, grafting strategy for weak supervision, use 3D Mamba blocks in the decoder which provide a global receptive field but with linear computational complexity, dual encoder (SAM branch processes concatenated modalities for global contextual shapes and CLIP branch guided by medical reports processes modalities independently to capture fine-grained structural details)
+10-the student model is trained to reconstruct clean images from noisy ones which could help to ignore the noise or uncertainty inherent in labels extracted from text reports
++ related work sections mentionned DiffBoost which is a model that uses text and edge guidance to generate synthetic images for data augmentation so we could do the same by using medical reports to provide textual conditioning for a diffusion-based segmentor then following the 3DKD-DiffuseNet approach of discarding the diffusion overhead during inference to keep the final clinical tool fast and efficient
+11-use FTDG by prompting an LLM to translate medical reports into structured pathology-aware attributes (ring enhancement, vasogenic edema, necrotic core) based on clinical criteria like WHO CNS5, use similarity-based retrieval method described in the study by computing the similarity between MRI voxels (patches) and text descriptions to generate whole-slide heatmaps, use LWA to capture fine-grained patterns between neighboring histopathological patches and apply a similar mechanism to 3D MRI volumes to help the model understand the spatial relationships between a tumor and its surrounding anatomical structures
++ authors mention that their model could extend to other modalities like MRI (they're using WSI)
+12-use prompt-aware transformer-based counterfactual diffusion model that integrates segmentation with synthesis to improve tumor prediction, we can adapt this approach by treating medical reports as prompts to guide the segmentation mask generation
++one study utilized prompt-tuned transformers optimized with bio-inspired algorithms to achieve near-perfect classification, it suggests that tuning the model with medical report data could significantly enhance its ability to focus on specific regions of interest
++ it advocate for hybrid CNN-Transformer models as the most effective approach for segmentation where we can use CNN encoder to capture fine-grained textures (like tumor edges) and a Transformer decoder to integrate the high-level global context provided by the medical reports
++Swin Transformer + UNet is identified as a top performer for segmentation, achieving 0.94 dice score
++as a strategies for weak supervision, they recommend using self-supervised learning to reduce the heavy dependence on costly manual annotations, mention ViT-WSI a weakly supervised Transformer trained on thousands of Whole Slide Images for biomarker prediction which proves that Transformers can learn effectively from high-level weak labels
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+14-classification task
+
+
+
+
+
 
 
 

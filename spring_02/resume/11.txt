@@ -1,0 +1,11 @@
+-Fine-Grained Patch Alignment Network (FG-PAN) is novel framework designed to improve the zero-shot classification of brain tumor subtypes from histopathological whole slide images (WSIs)
+-this task is traditionally difficult because different tumor subtypes often share very similar morphological features and large-scale annotated datasets for rare brain tumors are scarce
+-while existing vision-language models have shown potential for zero-shot tasks, they often fail to capture the subtle, fine-grained pathological details (nuclear atypia or microvascular proliferation) necessary for accurate brain tumor subtyping 
+-FG-PAN aims to bridge this gap by aligning refined visual features with rich, expert-level textual descriptions
+-the framework is built around a plug-and-play strategy that consists of two main streams:
+1-visual stream (local feature refinement): selects representative patches from a WSI based on their morphological and semantic importance using local window attention (LWA) to model spatial relationships between neighboring patches, capturing patterns that global models might miss, then the gated feature fusion (GFF) module suppresses noisy signals while amplifying the most diagnostically relevant visual features
+2-textual stream (fine-grained prototypes): instead of simple class names, the model uses LLMs (DeepSeek-R1) to generate detailed, pathology-aware descriptions, these descriptions include molecular profiles and histological signatures (microcystic honeycomb architecture) which help the model better differentiate between similar subtypes
+3-aggregation: final slide-level predictions are made using a coordinate-aware aggregation mechanism that weighs patch results based on their semantic confidence and spatial location
+-zero-shot generalization: the model was trained on the CAMELYON dataset (sentinel lymph nodes) and then evaluated on entirely different datasets (EBRAINS, IPD-Brain, TCGA, BRACS)
+-FG-PAN consistently enhanced the performance of multiple state-of-the-art foundation models (UNI, Conch, Virchow), it improved the balanced accuracy of the Conch-v1.5 baseline on the EBRAINS30 dataset from 0.493 to 0.572
+-visualization of the feature space (t-SNE) showed that the fine-grained LLM descriptions led to much clearer class separation compared to using standard category names

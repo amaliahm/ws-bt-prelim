@@ -1,0 +1,5 @@
+-review for yransformer-based models for segmentation, classification, detection, prognosis tasks
+-systematic scoping review of 124 peer-reviewed publications (2015–2025) that investigate the use of Transformer architectures for brain tumor analysis using MRI
+-identifies a significant paradigm shift from traditional feature selection and convolutional neural networks (CNNs) toward attention-driven models capable of capturing both global and local context for precise neuro-oncological diagnosis
+-4 main tasks: detection (10% of studies), segmentation (46% of studies), classification (31% of studies), prognosis (13% of studies)
+-3 main categories for transformer models: pure transformers, hybrid transformers, specialized transformers

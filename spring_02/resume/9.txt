@@ -1,0 +1,11 @@
+-MRI scans were originally 240×240×155 then transformed into 128×128×128 using random flipping and cropping, apply Z-score normalization
+-Medical SAM-CLIP Grafting Network (MSCG): novel dl framework designed for fully automated brain tumor segmentation by combining the geometric precision of the (SAM) with the rich semantic context of CLIP
+-CNNs and transformers which are commonly used have some limitation: 
+CNNs have a limited receptive field
+transformers capture global data but often lose local details resulting in blurred edges
+foundation models like the original SAM lack medical domain knowledge and typically require manual prompts (like bounding boxes)
+-the MSCG network utilizes a three-part architecture :
+dual encoder: employs two parallel frozen encoders (SAM-Med3D and CT-CLIP) to process 4 MRI modalities (FLAIR, T1, T1ce,  T2)
+SC-grafting module: grafts semantic information from the CLIP feature space into the SAM model at multiple layers (3, 6, 9, 12 transformer blocks)
+fusion decoder: to generate the final output so it integrates semantic flow (upsampled encoder features) and detail flow (high-resolution edge data from raw images) then 3D mamba blocks which provide a global receptive field similar to Transformers but with much higher computational efficiency for 3D medical volumes.
+-the model was trained and tested primarily on BraTS2023 (1251 samples) and validated on BraTS2018

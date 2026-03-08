@@ -1,0 +1,11 @@
+-3DKD-DiffuseNet: 3D knowledge distillation framework designed to enhance the accuracy and computational efficiency of multi-organ and brain tumor segmentation in medical imaging
+-they addresses a critical bottleneck in clinical workflows: the high computational demand of processing 3D datasets which often makes real-time analysis difficult
+-the framework is teacher-student architecture that uniquely integrates diffusion as a regularizer rather than a generative tool
+-high-capacity 3D attention-based teacher model (64M params) guides a lightweight 2-depth student model (21M params)
+-diffusion-guided learning: during training, the student model undergoes a forward-reverse diffusion process where it learns to reconstruct clean anatomical volumes from noisy inputs which forces the student's encoder to develop noise-invariant and spatially coherent features
+-this diffusion module is discarded during inference to ensure no extra computational weight is added during actual use
+-use intensity-based thresholding and Region of Interest (ROI) identification to isolate relevant anatomical structures
+-the model reduces training overhead significantly by excluding non-informative slices (areas without tumors)
+-framework was validated on BraTS (MRI) and RAOS datasets (CT)
+-avg inference time per epoch dropping from 135.4s to 92.8s
+-the primary contribution of this study is the decoupling of diffusion's representative power from its heavy computational cost making high-accuracy segmentation feasible for resource-constrained clinical environments

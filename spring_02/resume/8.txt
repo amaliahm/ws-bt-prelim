@@ -1,0 +1,14 @@
+-SEL: a prominent approach within the machine learning paradigm that combines the predictions of base-level models and improves the overall performance of predictions in order to reduce the errors and biases of each model.
+-objectives is to develop an enhanced BT detection and segmentation framework based on densely connected CNN with a stack ensemble approach
+-the strengths of each base model are leveraged in order to capture different aspects of the BT MRI for better segmentation
+-the architecture:
+upload datasets
+data preprocessing: shuffle, resize, flip (horizontai and vertical)
+data splitting (70-10-20)
+level-0 (weak learners): 3D CNN, AlexNet, ResNet50, VGG-16, VGG19, MobileNet-V3
+prediction of level-0 models
+level-1 (meta layer): DenseNet201)
+output
+
+-datasets: 5 public datasets including large Kaggle repositories (Datasets I and II) and the prestigious BraTS Challenge series (2020, 2021, 2023), all images resized to 512x512 
+
