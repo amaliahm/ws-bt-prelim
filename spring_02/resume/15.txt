@@ -1,0 +1,12 @@
+-unified systematic review that analyzes a decade (2015–2025) of advancements in 3D MRI segmentation for both brain tumors and ischemic stroke lesions
+-evaluate over 70 influential studies and major benchmark results from BraTS, ISLES and ATLAS
+-early phase (2015–2018): dominance of U-Net variants (3D U-Net, Residual U-Net) that established foundational encoder-decoder frameworks
+-intermediate phase (2018–2021): rise of self-configuring frameworks like nnU-Net, which demonstrated that systematic optimization of preprocessing and training can outperform complex new architectures
+-current state-of-the-art (2021–2025): integration of Hybrid CNN-Transformer models (TransBTS, Swin-Unet) to capture global context, Ensemble frameworks (NVAUTO) for robustness, and emerging Diffusion-based generative models for high-fidelity boundary refinement
+-models generally achieve higher accuracy on brain tumors (BraTS median Dice ~0.873) compared to stroke lesions (ATLAS median Dice ~0.703)
+-enhancing tumor (ET) remains the most challenging subregion due to severe class imbalance and irregular morphology
+-highest leaderboard rankings are currently dominated by large-scale ensembles and adaptive frameworks rather than single "novel" architectures
+-chaallenges and future directions:
+1-Data and generalization: expert annotation scarcity, domain shift between different hospital scanners, class imbalance
+2-clinical relevance: there is a need to move beyond simple Dice scores toward metrics like lesion-wise F1 and volume difference which better reflect clinical outcomes
+3-emerging trends: authors highlight Foundation Models (like SAM), semi-supervised learning, synthetic data generation as the most promising routes for improving model robustness and reducing the need for massive annotated datasets

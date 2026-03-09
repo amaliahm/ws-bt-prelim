@@ -13,41 +13,19 @@ note: the new paper
 + related work sections mentionned DiffBoost which is a model that uses text and edge guidance to generate synthetic images for data augmentation so we could do the same by using medical reports to provide textual conditioning for a diffusion-based segmentor then following the 3DKD-DiffuseNet approach of discarding the diffusion overhead during inference to keep the final clinical tool fast and efficient
 11-use FTDG by prompting an LLM to translate medical reports into structured pathology-aware attributes (ring enhancement, vasogenic edema, necrotic core) based on clinical criteria like WHO CNS5, use similarity-based retrieval method described in the study by computing the similarity between MRI voxels (patches) and text descriptions to generate whole-slide heatmaps, use LWA to capture fine-grained patterns between neighboring histopathological patches and apply a similar mechanism to 3D MRI volumes to help the model understand the spatial relationships between a tumor and its surrounding anatomical structures
 + authors mention that their model could extend to other modalities like MRI (they're using WSI)
-12-use prompt-aware transformer-based counterfactual diffusion model that integrates segmentation with synthesis to improve tumor prediction, we can adapt this approach by treating medical reports as prompts to guide the segmentation mask generation
+12-transformer architectures (Pure, Hybrid, Specialized) applied to brain tumor analysis
+use prompt-aware transformer-based counterfactual diffusion model that integrates segmentation with synthesis to improve tumor prediction, we can adapt this approach by treating medical reports as prompts to guide the segmentation mask generation
 +one study utilized prompt-tuned transformers optimized with bio-inspired algorithms to achieve near-perfect classification, it suggests that tuning the model with medical report data could significantly enhance its ability to focus on specific regions of interest
 + it advocate for hybrid CNN-Transformer models as the most effective approach for segmentation where we can use CNN encoder to capture fine-grained textures (like tumor edges) and a Transformer decoder to integrate the high-level global context provided by the medical reports
 +Swin Transformer + UNet is identified as a top performer for segmentation, achieving 0.94 dice score
 +as a strategies for weak supervision, they recommend using self-supervised learning to reduce the heavy dependence on costly manual annotations, mention ViT-WSI a weakly supervised Transformer trained on thousands of Whole Slide Images for biomarker prediction which proves that Transformers can learn effectively from high-level weak labels
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-14-classification task
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+13-Cross-Modality Equivariant Regularization forces the model to produce consistent CAMs across different imaging modalities (T1, T2, FLAIR),  use shared-weight Siamese structure to ensure that regardless of how the MRI slice is oriented, the features extracted remain consistent with the clinical description in the medical report, 
+14-classification task but
+PathTree generates heatmaps by visualizing attention scores over different image regions (patches) so we could use a similar attention-based aggregation module to highlight tumor regions that contribute most to the final diagnostic classification derived from the medical report, authors found that using detailed clinical reports as text prompts significantly improved the model's ability to represent the image data, they use patch-level learning paradigm to segmente large images into smaller manageable units, in case MRI images and medical reports are limited we could use PathTree’s few-shot capabilities
+15-review of segmentation techniques
+hybrid CNN-Transformer Models are better and had the best results
+diffusion-based models could produce high-fidelity masks and handle uncertainty-aware predictions
+teacher-student frameworks
+if MRI data contains artifacts the study suggests using artifact augmentation to improve the stability of pseudo-labels in brain tumor tasks
+dice scores alone may not capture clinical utility, they suggest to incorporate volumetric similarity (VS) and Hausdorff distance (HD95) to ensure that the text-guided boundaries are not just overlapping, but anatomically plausible and clinically relevant
 17-reimplement the same architecture for IRM (the work was made for CT scans)

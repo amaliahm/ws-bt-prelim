@@ -1,0 +1,12 @@
+-the problem we're dealing with is lack of brain tumor masks, masks are created only for research unlike reports which are written every day, training computer vision models useally with images and labels/captions only but the captions coudl't describe the situation well but they're useful unlike in medical, images with reports are better because reprots describe everything with details
+-the questions is how to use the large scale information we have to train tumor segmentation
+-propose report supervison which can use reports to train tumor segmentation either entirely substituting masks or in addition add a complement to mask
+-the model isn’t just learning to segment the tumor pixel-by-pixel, it’s also learning to make its segmentation results consistent with the semantic information described in the radiology report such as how many tumors are present (count), how large they are (size), where they are located (location) using the new two loss functions 
+-the dataset is sourced from the University of California San Francisco (UCSF) Hospital and nearby institutions (California, USA)
+-get the diameter and in which part of teh organ teh tumor is (extract 
+-AbdomenAtlas 2.0: public dataset provides segmentation masks for training
+-Hold-out Validation: 10% of the training set was reserved for internal validation during the training process.
+-use UCSF-Test for internal testing which contains 408 CTs from the same source as the training reports.
+-use JHH-Test for external testing to evaluate the model on an unseen hospital (Johns Hopkins), it consists of 100 CTs.
+-if segmented tumor has 1cm and the report says it should have 2cm so the loss fucntions will penalize the model to make this tumor larger to have the correct number of tumors, size and location
+-Llama 3.1 70B AWQ: https://huggingface.co/hugging-quants/Meta-Llama-3.1-70B-Instruct-AWQ-INT4?utm_source=chatgpt.com
