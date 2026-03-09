@@ -1,0 +1,12 @@
+-presents a novel weakly supervised segmentation (WSS) framework designed for multi-modal medical imaging
+-main goal is to generate accurate pixel-level segmentation masks using only image-level annotations (tags) thereby reducing the need for expensive and labor-intensive manual pixel-wise labeling
+-limitations of standard CAMs:
+1-lack of spatial equivariance: in fully supervised models, spatial transformations (like rotation) applied to an image result in the same transformation in the mask, in WSS models, this property is often lost because the global average pooling (GAP) layer used for classification discards spatial information
+2-multi-modal inconsistency: in medical imaging, the same anatomy is often captured across different modalities (T1 and T2 MRI), standard models often produce inconsistent CAMs for these different views of the same object
+-researchers introduced a learning strategy that leverages self-supervision to enforce consistency across both spatial transformations and imaging modalities, it includes
+1-siamese architecture: U-Net-based structure that processes original and spatially transformed images simultaneously to ensure the model's outputs are equivariant
+2-novel loss functions: Within-Modality Equivariance, Cross-Modality Equivariance, and KL-Divergence ($L_{KD}$)
+-use the BraTS 2019 and Prostate DECATHLON datasets
+-the model consistently outperformed recent state-of-the-art methods like SEAM, it showed a 12% improvement in Dice Similarity Coefficient (DSC) for the BraTS-FLAIR modality and up to 40% improvement for the Prostate-ADC modality
+-the model produces fewer False Negatives and False Positives, meaning it identifies more complete object regions while reducing over-segmentation
+-the method relies on multi-modal data and they assume that these modalities are perfectly co-aligned
